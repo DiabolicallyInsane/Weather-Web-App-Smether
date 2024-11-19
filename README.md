@@ -8,3 +8,6 @@ It is a basic project made with HTML + CSS + JS
 The card has basic info like humidity and windspeed, and the color of the card is a gradient depending upon the time in the xyz location.
 
 Overall a very simplistic desgin with not much complexity.
+
+# Visit the live site
+https://diabolicallyinsane.github.io/Weather-Web-App-Smether/
