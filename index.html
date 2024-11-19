@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smether</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: 0.5s ease;
+    }
+    body{
+        background: #373A40;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+    .main-card{
+        background: #547dd7;
+        color: white;
+        padding: 20px;
+        max-width: 525px;
+        border-radius: 10px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    }
+    .inputblock{
+        display: flex;
+        flex-basis: 1;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .inputblock input{
+        padding:15px;
+        flex: 0.8;
+        outline: none;
+        border-radius: 20px;
+        border: 0;
+        height: 50px;
+        width: 250px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: 0.5s ease;
+    }
+    .inputblock button{
+        flex: 0.2;
+        outline: none;
+        border-radius: 20px;
+        border: 0;
+        height: 50px;
+        width: 50px;
+        background-color: #BED754;
+        font-size:x-large;
+        color: white;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        transition: 0.5s ease;
+    }
+
+    .inputblock button:hover{
+        background: #adce1c;
+        scale: 0.97;
+    }
+
+    .inputblock input:hover{
+        scale: 0.97;
+    }
+    .weather{
+        margin-top: 30px;
+        display: none;
+        text-align: center;
+    }
+    .details{
+        margin: 20px;
+        display: flex;
+        align-items:center;
+        width: inherit;
+        flex: 1;
+        gap: 20px;
+        justify-content: space-evenly;
+    }
+    .details img{   
+        width: 30px;
+        height: 30px;
+    }
+    .humidity, .windspeed, .time{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 250px;
+        
+    }
+    .humidity p, .windspeed p, .time p{
+        font-weight: bold;
+        color: #fff;
+        background-color: transparent;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: small;
+    }
+</style>
+<body>
+    <div class="main-card">
+        <div class="inputblock">
+            <input type="text" placeholder="Enter a City's Name: " id="icity">
+            <button id="sbtn"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="weather">
+            <h2 id="desc"></h2>
+            <img src="weather-app-img/images/clear.png">
+            <h1 id="dtemp"></h1>
+            <h2 id="dcity"></h2>
+            <div class="details">
+                <div class="humidity">
+                <img src="weather-app-img/images/humidity.png">
+                <p id="dhumid"></p>
+            </div>
+            <div class="windspeed">
+                <img src="weather-app-img/images/wind.png">
+                <p id="dwind"></p>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://kit.fontawesome.com/7ead532fee.js" crossorigin="anonymous">
+    </script>
+
+    <script>
+
+const apiKey = "186a9014b04dc503fe07af423b0fa0ef"; 
+const searchBtn = document.querySelector('.inputblock button'); 
+const citynameInput = document.getElementById('icity'); 
+const URL = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+function setBackgroundColor(hour) {
+    const mainCard = document.querySelector('.main-card');
+    if (hour >= 5 && hour < 10) {
+        mainCard.style.background = 'linear-gradient(to bottom, #87CEFA, #A0C4FF)'; 
+    } else if (hour >= 10 && hour < 18) {
+        mainCard.style.background = 'linear-gradient(to bottom, #547dd7, #A0C4FF)';
+    } else if (hour >= 18 && hour < 21) {
+        mainCard.style.background = 'linear-gradient(to bottom, #FF8C00, #FF4500)'; 
+    } else {
+        mainCard.style.background = 'linear-gradient(to bottom, #4B0082, #000000)'; 
+    }
+}
+
+async function checkWeather(city) {
+    try {
+        const response = await fetch(URL + city + "&appid=" + apiKey); 
+        if (!response.ok) throw new Error("City not found"); 
+        const data = await response.json();
+        
+        document.getElementById('dtemp').innerHTML = Math.round(data.main.temp) + "°C";
+        document.getElementById('dhumid').innerHTML = `Humidity: ${data.main.humidity}%`;
+        document.getElementById('dwind').innerHTML = `Windspeed: ${data.wind.speed} km/h`;
+        document.getElementById('dcity').innerHTML = data.name;
+
+        const weatherCondition = data.weather[0].main.toLowerCase();
+        let weatherImage = "clear.png";
+        let description = "Clear Sky";
+
+        if (weatherCondition.includes("cloud")) {
+            weatherImage = "clouds.png";
+            description = "Cloudy Sky";
+        } else if (weatherCondition.includes("rain")) {
+            weatherImage = "rain.png";
+            description = "Rainy Weather";
+        } else if (weatherCondition.includes("snow")) {
+            weatherImage = "snow.png";
+            description = "Snowy Weather";
+        } else if (weatherCondition.includes("thunderstorm")) {
+            weatherImage = "thunderstorm.png";
+            description = "Thunderstorm";
+        }
+
+        document.querySelector('.weather img').src = `weather-app-img/images/${weatherImage}`;
+        document.getElementById('desc').innerHTML = description;
+
+         
+         const localTime = new Date((data.dt + data.timezone) * 1000);
+        const hour = localTime.getUTCHours();
+        console.log(hour);
+        
+        setBackgroundColor(hour); 
+
+        document.querySelector('.weather').style.display = 'block';
+
+    } catch (error) {
+        alert(error.message); 
+    }
+}
+
+searchBtn.addEventListener("click", () => {
+    const cityname = citynameInput.value.trim(); 
+    if (cityname) {
+        checkWeather(cityname);
+    } else {
+        alert("Please enter a city name."); 
+    }
+});
+    </script>
+</body>
+
+</html>
