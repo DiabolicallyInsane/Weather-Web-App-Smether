@@ -109,16 +109,16 @@
         </div>
         <div class="weather">
             <h2 id="desc"></h2>
-            <img src="images/clear.png">
+            <img src="weather-app-img/images/clear.png">
             <h1 id="dtemp"></h1>
             <h2 id="dcity"></h2>
             <div class="details">
                 <div class="humidity">
-                <img src="images/humidity.png">
+                <img src="weather-app-img/images/humidity.png">
                 <p id="dhumid"></p>
             </div>
             <div class="windspeed">
-                <img src="images/wind.png">
+                <img src="weather-app-img/images/wind.png">
                 <p id="dwind"></p>
             </div>
             </div>
@@ -178,7 +178,7 @@ async function checkWeather(city) {
             description = "Thunderstorm";
         }
 
-        document.querySelector('.weather img').src = `images/${weatherImage}`;
+        document.querySelector('.weather img').src = `weather-app-img/images/${weatherImage}`;
         document.getElementById('desc').innerHTML = description;
 
          
